@@ -73,6 +73,17 @@ func generateBST(preOrder []interface{}, inOrder []interface{})*Node{
 	return root
 }
 
+// 用于验证生成的树的中序遍历和前序遍历是否和给的输入是否一致
+func VerifyTree(preOrder []interface{}, inOrder []interface{}){
+	fmt.Println("oriPreOrder: ", preOrder)
+	fmt.Println("oriInOrder: ", inOrder)
+	root := generateBST(preOrder, inOrder)
+	bst := BST{root:root}
+	bstPreOrder := bst.PreOrder()
+	fmt.Println("bstPreOrder: ", bstPreOrder)
+	bstInOrder := bst.InOrder()
+	fmt.Println("bstInOrder: ", bstInOrder)
+}
 
 func main(){
 	/*
@@ -83,12 +94,10 @@ func main(){
 	*/
 	preOrder := []interface{}{"A", "B", "D", "E", "H", "I", "C", "F", "K", "G"}
 	inOrder := []interface{}{"D", "B", "H", "E", "I", "A", "F", "K", "C", "G"}
-	fmt.Println("oriPreOrder: ", preOrder)
-	fmt.Println("oriInOrder: ", inOrder)
-	root := generateBST(preOrder, inOrder)
-	bst := BST{root:root}
-	bstPreOrder := bst.PreOrder()
-	fmt.Println("bstPreOrder: ", bstPreOrder)
-	bstInOrder := bst.InOrder()
-	fmt.Println("bstInOrder: ", bstInOrder)
+	VerifyTree(preOrder, inOrder)
+
+	// 下面为验证bst的create后， 进行前序遍历和中序遍历得到的序列是否对
+	preOrder = []interface{}{"D", "B", "A", "C", "H", "E", "F", "G", "I", "K"}
+	inOrder = []interface{}{"A", "B", "C", "D", "E", "F", "G", "H", "I", "K"}
+	VerifyTree(preOrder, inOrder)
 }
