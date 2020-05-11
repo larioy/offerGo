@@ -1,5 +1,10 @@
 package bst
 
+import (
+	"offerPCom/queue"
+	"offerPCom/stack"
+)
+
 // 树节点结构体
 type Node struct{
 	left *Node
@@ -99,7 +104,7 @@ func (bst *BST)findMin(currentNode *Node, preNode *Node)(min *Node){
 func (bst *BST)DeleteNode(value string)bool{
 	min := bst.Min()
 	max := bst.Max()
-	if min == nil || value < min.Ele || max == nil && value > max.Ele{
+	if min == nil || value < min.Ele || max == nil || value > max.Ele{
 		return false
 	}
 	root := bst.root
@@ -275,4 +280,96 @@ func (bst *BST)_inOrderNextNode(currentNode *Node)(nextNode *Node){
 		return fatherNode
 	}
 
+}
+
+// 层序遍历
+func (bst *BST)LevelOrder()([]interface{}){
+	root := bst.root
+	if root == nil{
+		return nil
+	}
+	q := queue.InitQueue()
+	q.Push(root)
+	res := make([]interface{}, 0)
+	for; q.Size > 0; {
+		node := q.Pop()
+		currentNode := node.(*Node)   // 注意这里要将interface转换为节点的类型
+		res = append(res, currentNode.Ele)
+		if currentNode.left != nil{
+			q.Push(currentNode.left)
+		}
+		if currentNode.right != nil{
+			q.Push(currentNode.right)
+		}
+	}
+	return res
+}
+
+
+// 之字形打印
+func (bst *BST)TurnLevelOrder()([]interface{}){
+	root := bst.root
+	if root == nil{
+		return nil
+	}
+	st := stack.InitStack()
+	q := queue.InitQueue()
+	st.Push(root)
+	res := make([]interface{}, 0)
+	for ; st.Size > 0 || q.Size > 0; {
+		if st.Size > 0{
+			for ; st.Size > 0; {
+				node := st.Pop()
+				currentNode := node.(*Node)
+				res = append(res, currentNode.Ele)
+				if currentNode.left != nil{
+					q.Push(currentNode.left)
+				}
+				if currentNode.right != nil{
+					q.Push(currentNode.right)
+				}
+			}
+		}else{
+			for ; q.Size > 0; {
+				node := q.Pop()
+				currentNode := node.(*Node)
+				res = append(res, currentNode.Ele)
+				if currentNode.left != nil{
+					st.Push(currentNode.left)
+				}
+				if currentNode.right != nil{
+					st.Push(currentNode.right)
+				}
+			}
+		}
+	}
+	return res
+}
+
+// 分层打印， 每层放到一个切片里面
+func (bst *BST)LevelSliceOrder()([]interface{}){
+	root := bst.root
+	if root == nil{
+		return nil
+	}
+	q := queue.InitQueue()
+	q.Push(root)
+	res := make([]interface{}, 0)
+	for; q.Size > 0; {
+		levelSize := q.Size
+		levelSlice := make([]interface{}, 0)
+		for i := 0; i < levelSize; i++{
+			node := q.Pop()
+			currentNode := node.(*Node)   // 注意这里要将interface转换为节点的类型
+			levelSlice = append(levelSlice, currentNode.Ele)
+			if currentNode.left != nil{
+				q.Push(currentNode.left)
+			}
+			if currentNode.right != nil{
+				q.Push(currentNode.right)
+			}
+		}
+		res = append(res, levelSlice)
+	}
+	return res
 }
